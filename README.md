@@ -4,9 +4,9 @@ An React Native module implements Azure AD authentication flow using pure React 
 
 * [Installation](#user-content-installation)
 * [Usage](#user-content-usage-example)
- * [Login]()
- * [Logout]()
- * [RefreshToken]()
+ * [Login](#user-content-login)
+ * [Logout](#user-content-logout)
+ * [RefreshToken](#user-content-refresh-token)
 * [ADLoginView](#user-content-adloginview-reactcomponent-webview)
 * [Class ReactNativeAD](#user-content-class-reactnativead)
   * [Constructor](#user-content-constructor)
@@ -36,6 +36,8 @@ $ npm install --save react-native-azure-ad
 react-native-azure-ad implements authentication flow using `fetch` API and `Webview` component in  React Native, therefore there's no need to install Android and iOS native ADAL.
 
 ## Usage Example
+
+### Login
 
 The following example will show an Azure authorize page in your app, when user successfully logged in, it triggers `onSuccess` method.
 
@@ -80,6 +82,30 @@ class LandingView extends React.Component {
   }
 
 }
+
+```
+
+### Logout
+
+When a ADLoginView has prop `needLogout` set to `true` it redirect user to AD logout page for logout.
+
+```
+<ADLoginView
+              context={ReactNativeAD.getContext(CLIENT_ID)}
+              needLogout={true}/>
+```
+
+### Refresh Token
+
+Use `assureToken` method to assure `access_token` of specific resource is valid, when access token is expired, this method will attempt to refresh access token automatically and resolve renewed access token in promise. If it failed to renew the token, the access token in promise will be `undefined`, it means user may have to login again, so you might have to redirect user to ADLoginView for new authorization.
+
+
+```
+ReactNativeAD.getContext(CLIENT_ID).assureToken(RESOURCE_ID).then((token) => {
+
+ // use token ..
+ 
+})
 
 ```
 
