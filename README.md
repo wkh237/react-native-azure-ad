@@ -1,4 +1,5 @@
 # react-native-azure-ad
+[![npm version](https://badge.fury.io/js/react-native-azure-ad.svg)](https://badge.fury.io/js/react-native-azure-ad)
 
 An React Native module implements Azure AD authentication flow using pure React Native API. You can use both web application flow and mobile application client_id with this module.
 
