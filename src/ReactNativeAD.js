@@ -7,6 +7,8 @@ import log from './logger'
 const loginUrl = 'https://login.microsoftonline.com/<tenant id>/oauth2/authorize'
 const tokenUrl = 'https://login.microsoftonline.com/common/oauth2/token'
 
+import type {ADConfig, ADCredentials, GrantTokenResp, ReactNativeADConfig, ReactNativeADCredential} from './types';
+
 /**
  * Global static hash map which stores contexts of different ReactNativeAD context,
  * which hash key is  {ReactNativeAD.config#client_id}

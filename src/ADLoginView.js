@@ -1,5 +1,6 @@
 // @flow
-import React, {WebView, Dimensions, AsyncStorage, Platform} from 'react-native'
+import React, {Component};
+import {WebView, Dimensions, AsyncStorage, Platform} from 'react-native'
 import CONST from './const.js'
 import ReactNativeAD from './ReactNativeAD.js'
 import Timer from 'react-timer-mixin'
@@ -8,7 +9,7 @@ import log from './logger'
 const loginUrl = 'https://login.microsoftonline.com/<tenant id>/oauth2/authorize'
 const tokenUrl = 'https://login.microsoftonline.com/common/oauth2/token'
 
-export default class ADLoginView extends React.Component {
+export default class ADLoginView extends Component {
 
   props : {
     onSuccess? : ?Function,

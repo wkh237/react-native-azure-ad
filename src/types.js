@@ -1,6 +1,6 @@
 //@flow
 
-declare type ADConfig = {
+export type ADConfig = {
   client_secret : string | null,
   client_id : string | null,
   redirect_uri : string | null,
@@ -8,16 +8,16 @@ declare type ADConfig = {
   resources : Array<string> | null,
 };
 
-declare type ADCredentials = {
+export type ADCredentials = {
   [key:string] : ReactNativeADCredential | null
 }
 
-declare type GrantTokenResp = {
+export type GrantTokenResp = {
   resource : string,
   response : Object
 };
 
-declare type ReactNativeADConfig = {
+export type ReactNativeADConfig = {
   client_id : string,
   redirect_uri? : string,
   authority_host : string,
@@ -27,7 +27,7 @@ declare type ReactNativeADConfig = {
   onSuccess : Function,
 };
 
-declare type ReactNativeADCredential = {
+export type ReactNativeADCredential = {
   access_token : string,
   expires_in : number,
   expires_on : number,
