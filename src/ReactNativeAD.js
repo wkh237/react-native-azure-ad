@@ -4,8 +4,7 @@ import CONST from './const.js'
 import Timer from 'react-timer-mixin'
 import log from './logger'
 
-const loginUrl = 'https://login.microsoftonline.com/<tenant id>/oauth2/authorize'
-const tokenUrl = 'https://login.microsoftonline.com/common/oauth2/token'
+const defaultTokenUrl = 'https://login.microsoftonline.com/common/oauth2/token'
 
 import type {ADConfig, ADCredentials, GrantTokenResp, ReactNativeADConfig, ReactNativeADCredential} from './types';
 
@@ -95,13 +94,13 @@ export default class ReactNativeAD {
    */
   getAccessToken (resource:string):string | null {
 
-     let result:ReactNativeADCredential | null = null
-     result = this.credentials ? this.credentials[resource] : null
-     log.debug('getAccessToken', resource, result)
-     if(result !== null) {
-       return result.access_token
-     }
-     return null
+    let result:ReactNativeADCredential | null = null
+    result = this.credentials ? this.credentials[resource] : null
+    log.debug('getAccessToken', resource, result)
+    if(result !== null) {
+      return result.access_token
+    }
+    return null
   }
 
   /**
@@ -115,22 +114,22 @@ export default class ReactNativeAD {
     let context = this
     // Check credential of the resource
     return this.checkCredential(resource)
-      .then((cred:ReactNativeADCredential | null) => {
-        if(!cred)
-          return context.refreshToken(resource)
-        // Credaentials found, check if token expired.
-        else {
-          let expires_on = cred.expires_on*1000
-          // Token not expired, resolve token
-          if(Date.now() - expires_on <= -60000)
-            return Promise.resolve(cred.access_token)
-          // Token expired, call refresh token
-          else {
-            log.debug('cached token expired, refresh token.')
+        .then((cred:ReactNativeADCredential | null) => {
+          if(!cred)
             return context.refreshToken(resource)
+          // Credaentials found, check if token expired.
+          else {
+            let expires_on = cred.expires_on*1000
+            // Token not expired, resolve token
+            if(Date.now() - expires_on <= -60000)
+              return Promise.resolve(cred.access_token)
+            // Token expired, call refresh token
+            else {
+              log.debug('cached token expired, refresh token.')
+              return context.refreshToken(resource)
+            }
           }
-        }
-      })
+        })
   }
 
   /**
@@ -153,13 +152,13 @@ export default class ReactNativeAD {
           grantType = CONST.GRANT_TYPE.AUTHORIZATION_CODE
         log.debug('refresh token with config=', config, `grant_type=${grantType}`)
         this.grantAccessToken(grantType, config)
-        .then((resp:GrantTokenResp) => {
-          resolve(resp.response.access_token)
-        })
-        .catch((err) => {
-          log.warn(err)
-          reject(err)
-        })
+            .then((resp:GrantTokenResp) => {
+              resolve(resp.response.access_token)
+            })
+            .catch((err) => {
+              log.warn(err)
+              reject(err)
+            })
       })
 
     })
@@ -172,8 +171,8 @@ export default class ReactNativeAD {
    *                           `null`, otherwise resolve `ReactNativeADCredential`
    */
   checkCredential(resourceId:string):Promise<ReactNativeADCredential | null> {
-  let context = this
-   return new Promise((resolve, reject) => {
+    let context = this
+    return new Promise((resolve, reject) => {
       let config = context.config
       let resourceKey = _getResourceKey(context.config, resourceId)
       let cachedCred = context.credentials[resourceId]
@@ -182,15 +181,15 @@ export default class ReactNativeAD {
       if(!cachedCred || cachedCred === void 0) {
         try{
           AsyncStorage.getItem(resourceKey)
-            .then((credStr) => {
-              log.debug(`checkCredential from AsyncStorage data=${credStr}`)
-              // Do not have any access record about this resource, need manual login
-              let result: ReactNativeADCredential | null = null
-              if(credStr) {
-                result = JSON.parse(credStr)
-              }
-              resolve(result)
-            })
+              .then((credStr) => {
+                log.debug(`checkCredential from AsyncStorage data=${credStr}`)
+                // Do not have any access record about this resource, need manual login
+                let result: ReactNativeADCredential | null = null
+                if(credStr) {
+                  result = JSON.parse(credStr)
+                }
+                resolve(result)
+              })
         } catch(err){
           console.debug('async storage err', err)
           reject(err)
@@ -224,7 +223,7 @@ export default class ReactNativeAD {
         }, 15000)
 
         let body = `grant_type=${grantType}${_serialize(params)}`
-        fetch(tokenUrl, {
+        fetch(this.config.token_uri ? this.config.token_uri : defaultTokenUrl, {
           method : 'POST',
           mode : 'cors',
           headers : {
@@ -232,30 +231,30 @@ export default class ReactNativeAD {
           },
           body
         })
-        .then((response) => {
-          Timer.clearTimeout(tm)
-          return response.text()
-        })
-        .then((res) => {
-          let cred: GrantTokenResp = {
-            resource : params.resource,
-            response : JSON.parse(res.replace('access_token=',''))
-          }
-          // save to memory context
-          this.credentials[params.resource] = cred.response
-          // save to persistent context
-          let cacheKey = _getResourceKey(this.config, params.resource)
-          if(cred.response.access_token) {
-            log.debug(`save credential ${cacheKey} `, cred.response)
-            AsyncStorage.setItem(cacheKey, JSON.stringify(cred.response))
-            // truncate prefix
-            resolve(cred)
-          } else {
-            log.debug(`failed to grant token for resource ${cacheKey}`, cred.response)
-            reject(cred)
-          }
-        })
-        .catch(reject)
+            .then((response) => {
+              Timer.clearTimeout(tm)
+              return response.text()
+            })
+            .then((res) => {
+              let cred: GrantTokenResp = {
+                resource : params.resource,
+                response : JSON.parse(res.replace('access_token=',''))
+              }
+              // save to memory context
+              this.credentials[params.resource] = cred.response
+              // save to persistent context
+              let cacheKey = _getResourceKey(this.config, params.resource)
+              if(cred.response.access_token) {
+                log.debug(`save credential ${cacheKey} `, cred.response)
+                AsyncStorage.setItem(cacheKey, JSON.stringify(cred.response))
+                // truncate prefix
+                resolve(cred)
+              } else {
+                log.debug(`failed to grant token for resource ${cacheKey}`, cred.response)
+                reject(cred)
+              }
+            })
+            .catch(reject)
 
       } catch(err) {
         reject(err)
