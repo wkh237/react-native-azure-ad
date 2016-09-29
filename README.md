@@ -8,7 +8,7 @@ An React Native module implements Azure AD authentication flow using pure React 
  * [Login](#user-content-login)
  * [Logout](#user-content-logout)
  * [RefreshToken](#user-content-refresh-token)
-* [ADLoginView](#user-content-adloginview-reactcomponent-webview)
+* [ADLoginView](#user-content-adloginview-webview)
 * [Class ReactNativeAD](#user-content-class-reactnativead)
   * [Constructor](#user-content-constructor)
   * [Porperties](#user-content-properties)
@@ -110,7 +110,7 @@ ReactNativeAD.getContext(CLIENT_ID).assureToken(RESOURCE_ID).then((token) => {
 
 ```
 
-### ADLoginView:ReactComponent<Webview>
+### ADLoginView:Webview
 
 `ADLoginView` is it's a wrapped [Webview](https://facebook.github.io/react-native/docs/webview.html#content) component, it will display the login page by given prop `context`, when user is authorized, it execute the function in prop `onSuccess`.
 
