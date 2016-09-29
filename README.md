@@ -141,6 +141,10 @@ When it set to `true`, ADLoginView will logout user and redirect user to AD logi
 
 When this property set to `true`, ADLoginView will be hidden after logged in, in prevention of displaying an empty/error web page.
 
+`onURLChange` **(optional)**
+
+A event listener which triggers when ADLoginView's URL change.
+
 ### Class ReactNativeAD
 
 You will need to create at least one `ReactNativeAD` object in your application, the ReactNativeAD object stores, and update authentication information in [AsyncStorage](http://facebook.github.io/react-native/releases/0.25/docs/asyncstorage.html#asyncstorage) automatically, it also provides several API for access theses informations.
