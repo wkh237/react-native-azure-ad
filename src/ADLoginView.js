@@ -1,5 +1,5 @@
 // @flow
-import React, {Component};
+import React, {Component} from 'react'
 import {WebView, Dimensions, AsyncStorage, Platform} from 'react-native'
 import CONST from './const.js'
 import ReactNativeAD from './ReactNativeAD.js'
@@ -9,12 +9,13 @@ import log from './logger'
 const loginUrl = 'https://login.microsoftonline.com/<tenant id>/oauth2/authorize'
 const tokenUrl = 'https://login.microsoftonline.com/common/oauth2/token'
 
-export default class ADLoginView extends Component {
+export default class ADLoginView extends React.Component {
 
   props : {
     onSuccess? : ?Function,
     needLogout? : bool,
     style : any,
+    onURLChange : Function,
     context : ReactNativeAD,
     hideAfterLogin? : bool,
   };
@@ -142,6 +143,9 @@ export default class ADLoginView extends Component {
       // this._needRedirect = false
       return true
     }
+
+    if(this.props.onURLChange)
+      this.props.onURLChange(e)
 
     if( code !== null ){
       this._lock = true
