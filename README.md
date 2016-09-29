@@ -8,7 +8,7 @@ An React Native module implements Azure AD authentication flow using pure React 
  * [Login](#user-content-login)
  * [Logout](#user-content-logout)
  * [RefreshToken](#user-content-refresh-token)
-* [ADLoginView](#user-content-adloginview-webview)
+* [ADLoginView](#user-content-adloginviewwebview)
 * [Class ReactNativeAD](#user-content-class-reactnativead)
   * [Constructor](#user-content-constructor)
   * [Porperties](#user-content-properties)
