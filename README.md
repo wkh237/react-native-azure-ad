@@ -11,7 +11,7 @@ An React Native module implements Azure AD authentication flow using pure React 
 * [ADLoginView](#user-content-adloginviewwebview)
 * [Class ReactNativeAD](#user-content-class-reactnativead)
   * [Constructor](#user-content-constructor)
-  * [Porperties](#user-content-properties)
+  * [Properties](#user-content-properties)
      * [config](#user-content-config-ADConfig)
      * [credentials](#user-content-credentials-ADCredentials)
   * [Frequently used methods](#user-content-frequently-used-methods)
@@ -105,7 +105,7 @@ Use `assureToken` method to assure `access_token` of specific resource is valid,
 ReactNativeAD.getContext(CLIENT_ID).assureToken(RESOURCE_ID).then((token) => {
 
  // use token ..
- 
+
 })
 
 ```
