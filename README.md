@@ -232,15 +232,15 @@ Assure that access_token of a resource is valid, when access token is expired, t
 
 This method replace the ReactNativeAD instance's `credentials` property with the object in `data` argument. It will also save the each entry in `data` into AsyncStorage, with key = <client id>.<resource id>. For example, if client_id of this ReactNativeAD instance is `eabc-123` and one of the entry's key is `http://graph.microsoft.com`(aka. resource id), then the data in this entry will be stored in AsyncStorage with key `eabc-123.http://graph.microsoft.com`.
 
-`refreshToken(resourceId:string):Promise<?string>`
+#### refreshToken(resourceId:string):Promise<?string>
 
 Refresh token of the resource, when credentials is empty, it will try to update access token for resource. The access token in promise is possible to be `undefined`, it means user may have to login again, so you might have to redirect user to ADLoginView for new authorization.
 
-`checkCredential(resourceId:string):Promise<ReactNativeADCredential | null>`
+#### checkCredential(resourceId:string):Promise<ReactNativeADCredential | null> 
 
 Check credentials of the resource exist or not.
 
-`grantAccessToken(grantType:string, params:any):Promise<GrantTokenResp>`
+#### grantAccessToken(grantType:string, params:any):Promise<GrantTokenResp>
 
 Get access_token by given `grant_type` and params, when this process success, it stores credentials in format of `ReactNativeADCredentials`, in both ReactNativeAD.credentials and AsyncStorage.
 
