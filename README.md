@@ -208,27 +208,27 @@ This property stores configurations (such as client_id, resources ..) of a React
 
 This property stores acquired credential informatio for each resource endpoint. It a hash map structured data, with resource id as key, and a [ReactNativeADCredential](#user-content-ReactNativeADCredential) object as value.
 
-#### Frequently used methods
+### Frequently used methods
 
-`getConfig ()`:[ADConfig](#user-content-adconfig)
+#### getConfig ():[ADConfig](#user-content-adconfig)
 
 This method returns the ReactNativeAD instance's `config` property.
 
-`getCredentials ()`:[ADCredentials](#user-content-adcredentials)
+#### getCredentials ()`:[ADCredentials](#user-content-adcredentials)
 
 This method returns the ReactNativeAD instance's `credentials` property.
 
-`getAccessToken(resouceId:string):string | null`
+#### getAccessToken(resouceId:string):string | null
 
 Get access token by given resource id, if no corresponding token exists returns null.
 
-`assureToken(resource:string):Promise<?string>`
+#### assureToken(resource:string):Promise<?string>
 
 Assure that access_token of a resource is valid, when access token is expired, this method will attempt to refresh access token automatically and resolve renewed access token in promise. If it failed to renew the token, the access token in promise will be `undefined`, it means user may have to login again, so you might have to redirect user to ADLoginView for new authorization.
 
-#### Methods for internal mechanism
+### Methods for internal mechanism
 
-`saveCredentials(data:ADCredentials):Promise`
+#### saveCredentials(data:ADCredentials):Promise
 
 This method replace the ReactNativeAD instance's `credentials` property with the object in `data` argument. It will also save the each entry in `data` into AsyncStorage, with key = <client id>.<resource id>. For example, if client_id of this ReactNativeAD instance is `eabc-123` and one of the entry's key is `http://graph.microsoft.com`(aka. resource id), then the data in this entry will be stored in AsyncStorage with key `eabc-123.http://graph.microsoft.com`.
 
