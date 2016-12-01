@@ -15,7 +15,6 @@ import type {ADConfig, ADCredentials, GrantTokenResp, ReactNativeADConfig, React
  */
 let _contexts= {};
 
-
 export default class ReactNativeAD {
 
   config : ADConfig;
@@ -27,6 +26,23 @@ export default class ReactNativeAD {
 
   static removeContext(client_id:string) {
     delete _contexts[client_id]
+  }
+
+  static ResourceOwnerPasswordCredential(data:ResourceOwnerPasswordCredential) {
+
+    let url = `https://login.windows.net/${data.tenant_id}/oauth2/token`
+    let {resource, client_id, username, password} = data
+    let urlencode =
+      [
+        `resource=${encodeURIComponent(resource)}`,
+        'grant_type=password',
+        `client_id=${client_id}`,
+        `username=${username}`,
+        `password=${password}`
+      ].join('$')
+
+    fetch(url, { method : 'POST', body : urlencode })
+
   }
 
   constructor(config:ADConfig) {
@@ -205,7 +221,7 @@ export default class ReactNativeAD {
    * Get access_token by `given grant_type` and params, when this process
    * success, it stores credentials in format of `ReactNativeADCredential`,
    * in both ReactNativeAD.credentials and AsyncStorage.
-   * @param  {string {enum: authorization_code, refresh_token}} grantType
+   * @param  {string {enum: authorization_code, refresh_token, password}} grantType
    * Responsed from ReactNativeAD#handleADToken.
    * @param  {object} params Urlencoded form data in hashmap format
    * @return {Promise<GrantTokenResp>}  .
@@ -214,7 +230,8 @@ export default class ReactNativeAD {
 
     // If resource is null or undefined, use `common` by default
     params.resource = params.resource || 'common'
-
+    if(grantType === 'password')
+      params['client_id'] = this.config.client_id
     return new Promise((resolve, reject) => {
       try {
         log.debug(`${grantType} access token for resource ${params.resource}`)
@@ -231,30 +248,30 @@ export default class ReactNativeAD {
           },
           body
         })
-            .then((response) => {
-              Timer.clearTimeout(tm)
-              return response.text()
-            })
-            .then((res) => {
-              let cred: GrantTokenResp = {
-                resource : params.resource,
-                response : JSON.parse(res.replace('access_token=',''))
-              }
-              // save to memory context
-              this.credentials[params.resource] = cred.response
-              // save to persistent context
-              let cacheKey = _getResourceKey(this.config, params.resource)
-              if(cred.response.access_token) {
-                log.debug(`save credential ${cacheKey} `, cred.response)
-                AsyncStorage.setItem(cacheKey, JSON.stringify(cred.response))
-                // truncate prefix
-                resolve(cred)
-              } else {
-                log.debug(`failed to grant token for resource ${cacheKey}`, cred.response)
-                reject(cred)
-              }
-            })
-            .catch(reject)
+        .then((response) => {
+          Timer.clearTimeout(tm)
+          return response.text()
+        })
+        .then((res) => {
+          let cred: GrantTokenResp = {
+            resource : params.resource,
+            response : JSON.parse(res.replace('access_token=',''))
+          }
+          // save to memory context
+          this.credentials[params.resource] = cred.response
+          // save to persistent context
+          let cacheKey = _getResourceKey(this.config, params.resource)
+          if(cred.response.access_token) {
+            log.debug(`save credential ${cacheKey} `, cred.response)
+            AsyncStorage.setItem(cacheKey, JSON.stringify(cred.response))
+            // truncate prefix
+            resolve(cred)
+          } else {
+            log.debug(`failed to grant token for resource ${cacheKey}`, cred.response)
+            reject(cred)
+          }
+        })
+        .catch(reject)
 
       } catch(err) {
         reject(err)
@@ -282,7 +299,7 @@ function _getResourceKey(config:ADConfig, resourceId:string):string {
 function _serialize(params:Object):string {
   let paramStr = ''
   for(let prop in params) {
-    if(params[prop] !== null && params[prop] !== void 0)
+    if(params[prop] !== null && params[prop] !== void 0 && prop !== 'grant_type')
       paramStr += `&${prop}=${encodeURIComponent(params[prop])}`
   }
   return paramStr;
