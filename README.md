@@ -236,7 +236,7 @@ This method replace the ReactNativeAD instance's `credentials` property with the
 
 Refresh token of the resource, when credentials is empty, it will try to update access token for resource. The access token in promise is possible to be `undefined`, it means user may have to login again, so you might have to redirect user to ADLoginView for new authorization.
 
-#### checkCredential(resourceId:string):Promise<ReactNativeADCredential | null> 
+#### checkCredential(resourceId:string):Promise<ReactNativeADCredential | null>
 
 Check credentials of the resource exist or not.
 
