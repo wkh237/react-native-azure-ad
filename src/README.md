@@ -52,7 +52,7 @@ class LandingView extends React.Component {
     this.AzureADContext = {
       client_id : CLIENT_ID,
       // Optional
-      redirectUrl : 'http://localhost:8080',  
+      redirect_uri : 'http://localhost:8080',  
       // Optional
       authority_host : 'https://login.microsoftonline.com/common/oauth2/authorize',
       // Optional
