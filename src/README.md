@@ -57,6 +57,8 @@ class LandingView extends React.Component {
       authority_host : 'https://login.microsoftonline.com/common/oauth2/authorize',
       // Optional
       tenant  : 'common',  
+      // Optional
+      prompt : 'none',
       // This is required if client_id is a web application id
       // but not recommended doing this way.
       client_secret : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
@@ -158,6 +160,10 @@ The url of authorization page, if not specified, it will use `https://login.micr
 
 The tenant id of application.
 
+`prompt:string` **Optional**
+
+Indicates the type of user interaction that is required. The only valid values are 'login', 'none' and 'consent'. For details, please refer to [this](https://docs.microsoft.com/en-us/azure/active-directory/active-directory-protocols-openid-connect-code) documentation.
+
 `client_secret:string` **Required if use web application client_id**
 
 This property is only required when your application uses a web application client_id, **but it is not recommended to do this way, because store client_secret in application could be dangerous**.
@@ -223,6 +229,7 @@ Get access_token by given `grant_type` and params, when this process success, it
   client_id : string | null,
   redirect_uri : string | null,
   tenant : string | null,
+  prompt : string | null,
   resources : Array<string> | null,
 }
 ```

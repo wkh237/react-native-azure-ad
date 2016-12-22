@@ -5,6 +5,7 @@ export type ADConfig = {
   client_id : string | null,
   redirect_uri : string | null,
   tenant : string | null,
+  prompt : string | null,
   resources : Array<string> | null,
 };
 
