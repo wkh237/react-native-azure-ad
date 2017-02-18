@@ -211,7 +211,7 @@ export default class ADLoginView extends React.Component {
 
     if(resources === null || resources === void 0)
     {
-      promises.push(this.context.grantAccessToken(CONST.GRANT_TYPE.AUTHORIZATION_CODE, config))
+      promises.push(context.grantAccessToken(CONST.GRANT_TYPE.AUTHORIZATION_CODE, config))
     }
     // Get access_token for each resource
     else {
