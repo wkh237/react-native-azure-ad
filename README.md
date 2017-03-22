@@ -74,6 +74,13 @@ class LandingView extends React.Component {
   }
 
   render() {
+
+  new ReactNativeAD({
+    client_id: CLIENT_ID,
+    resources: [
+      'https://outlook.office365.com'
+    ]})
+  
     return <ADLoginView
               context={ReactNativeAD.getContext(CLIENT_ID)}
               onSuccess={this.onLoginSuccess.bind(this)}/>
