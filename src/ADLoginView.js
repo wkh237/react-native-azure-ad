@@ -63,8 +63,16 @@ export default class ADLoginView extends React.Component {
     log.debug('ADLoginView updated.')
   }
 
-  componentDidMount() {
-
+  componentWillReceiveProps(nextProps){
+    if(!this.props.needLogout && nextProps.needLogout) {
+      let context = this.props.context
+      let tenant = context.getConfig().tenant
+      this._needRedirect = nextProps.needLogout || false
+      this.setState({
+        page : this._getLoginUrl(tenant || 'common'),
+        visible : true
+      })
+    }
   }
 
   render() {
@@ -85,7 +93,7 @@ export default class ADLoginView extends React.Component {
           javaScriptEnabled={true}
           domStorageEnabled={true}
           onLoadEnd={()=>{
-            if(this.props.needLogout){
+            if(this._needRedirect){
               this._needRedirect = false
               let tenant = this.props.context.getConfig().tenant || 'common'
               this.setState({page : this._getLoginUrl(tenant)})

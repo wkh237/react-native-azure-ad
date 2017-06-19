@@ -43,12 +43,19 @@ class RNAzureAD extends Component {
     return (
       <View style={styles.container}>
         <ADLoginView context={ReactNativeAD.getContext(config.client_id)}
-          needLogout={false}
+          needLogout={this.state.logout}
           hideAfterLogin={true}
           onSuccess={this.onLoginSuccess.bind(this)}
         />
+        <Button onPress={(e) => this.logout()} title="logout"/>
       </View>
     )
+  }
+
+  logout(e){
+    this.setState({
+      logout:true
+    })
   }
 
   onLoginSuccess(cred) {
