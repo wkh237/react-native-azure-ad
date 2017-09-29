@@ -51,8 +51,8 @@ export default class ReactNativeAD {
       throw new Error('Invalid ADConfig object', config)
     if(typeof config.client_id !== 'string')
       throw new Error('client_id is not provided.')    
-    if (config.token != null)
-        config.token_uri = defaultTokenUrl.replace('common', config.token)
+    if (config.tenant != null)
+        config.token_uri = defaultTokenUrl.replace('common', config.tenant)
     this.config = config
     this.credentials = {}
     _contexts[config.client_id] = this
