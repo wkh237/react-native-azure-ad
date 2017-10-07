@@ -59,6 +59,8 @@ class LandingView extends React.Component {
       tenant  : 'common',  
       // Optional
       prompt : 'none',
+      // Optional
+      login_hint : 'user@domain.com',	 	  
       // This is required if client_id is a web application id
       // but not recommended doing this way.
       client_secret : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
@@ -164,6 +166,10 @@ The tenant id of application.
 
 Indicates the type of user interaction that is required. The only valid values are 'login', 'none' and 'consent'. For details, please refer to [this](https://docs.microsoft.com/en-us/azure/active-directory/active-directory-protocols-openid-connect-code) documentation.
 
+`login_hint:string` **Optional**
+
+Can be used to pre-fill the username/email address field of the sign-in page for the user, if you know their username ahead of time.
+
 `client_secret:string` **Required if use web application client_id**
 
 This property is only required when your application uses a web application client_id, **but it is not recommended to do this way, because store client_secret in application could be dangerous**.
@@ -231,6 +237,7 @@ Get access_token by given `grant_type` and params, when this process success, it
   tenant : string | null,
   prompt : string | null,
   resources : Array<string> | null,
+  login_hint : string | null,  
 }
 ```
 
