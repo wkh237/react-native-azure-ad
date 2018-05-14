@@ -6,7 +6,7 @@ import ReactNativeAD from './ReactNativeAD.js'
 import Timer from 'react-timer-mixin'
 import log from './logger'
 
-const loginUrl = 'https://login.microsoftonline.com/<tenant id>/oauth2/authorize'
+const loginUrl = 'https://login.microsoftonline.com/<tenant id>/oauth2/v2.0/authorize'
 const tokenUrl = 'https://login.microsoftonline.com/common/oauth2/token'
 
 export default class ADLoginView extends React.Component {
@@ -123,15 +123,18 @@ export default class ADLoginView extends React.Component {
     let context = this.props.context || null
     let redirect = context.getConfig().redirect_uri
     let prompt = context.getConfig().prompt
+    let scope = context.getScope();
 
     if(context !== null) {
       let result = `${authUrl}?response_type=code` +
              `&client_id=${context.getConfig().client_id}` +
-             (redirect ? `&redirect_url=${context.getConfig().redirect_uri}&nonce=rnad-${Date.now()}` : '') +
-             (prompt ? `&prompt=${context.getConfig().prompt}` : '')
+             (redirect ? `&redirect_uri=${context.getConfig().redirect_uri}&nonce=rnad-${Date.now()}` : '') +
+             (prompt ? `&prompt=${context.getConfig().prompt}` : '') +
+             (scope ? `&scope=${scope}` : '');
              
       if(this._needRedirect)
         result = `https://login.windows.net/${this.props.context.getConfig().client_id}/oauth2/logout`
+
       return result
     }
     else {
@@ -194,7 +197,6 @@ export default class ADLoginView extends React.Component {
    * @return {Promise<void>}
    */
   _getResourceAccessToken(code:string):Promise {
-
     let context = this.props.context
 
     if(!context)
@@ -214,7 +216,7 @@ export default class ADLoginView extends React.Component {
     let promises:Array<Promise> = []
     let config = { client_id, redirect_uri, code, client_secret,
       // set resource to common by default
-      resource : 'common'
+      // resource : 'common'
     }
 
     if(resources === null || resources === void 0)
@@ -237,7 +239,6 @@ export default class ADLoginView extends React.Component {
 
       let context = this.props.context
       let onSuccess = this.props.onSuccess || function(){}
-
       // trigger loggined finished event
       if(context !== null && typeof this.props.onSuccess === 'function')
         onSuccess(context.getCredentials())
