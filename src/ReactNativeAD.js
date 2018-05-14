@@ -4,7 +4,7 @@ import CONST from './const.js'
 import Timer from 'react-timer-mixin'
 import log from './logger'
 
-const defaultTokenUrl = 'https://login.microsoftonline.com/common/oauth2/token'
+const defaultTokenUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
 
 import type {ADConfig, ADCredentials, GrantTokenResp, ReactNativeADConfig, ReactNativeADCredential} from './types';
 
@@ -45,16 +45,15 @@ export default class ReactNativeAD {
 
   }
 
-  constructor(config:ADConfig) {
+  constructor(config:ADConfig, scope) {
 
     if(config === null || config === void 0)
       throw new Error('Invalid ADConfig object', config)
     if(typeof config.client_id !== 'string')
-      throw new Error('client_id is not provided.')    
-    if (config.tenant != null)
-        config.token_uri = defaultTokenUrl.replace('common', config.tenant)
+      throw new Error('client_id is not provided.')
     this.config = config
     this.credentials = {}
+    this.scope = scope;
     _contexts[config.client_id] = this
   }
 
@@ -66,6 +65,22 @@ export default class ReactNativeAD {
   getCredentials():ADCredentials | null {
     log.verbose('getCredentials', this.credentials)
     return this.credentials
+  }
+
+  getScope() {
+    const keys = Object.keys(this.scope);
+
+    let scopeString = '';
+
+    keys.map((item: string, index: number) => {
+      if (index === 0) {
+        scopeString = `${item}`;
+      } else {
+        scopeString = `${scopeString}+${item}`;
+      }
+    });
+
+    return scopeString;
   }
 
   /**
@@ -229,9 +244,8 @@ export default class ReactNativeAD {
    * @return {Promise<GrantTokenResp>}  .
    */
   grantAccessToken(grantType:string, params:any):Promise<GrantTokenResp> {
-
     // If resource is null or undefined, use `common` by default
-    params.resource = params.resource || 'common'
+    // params.resource = params.resource || 'common'
     if(grantType === 'password')
       params['client_id'] = this.config.client_id
     return new Promise((resolve, reject) => {
@@ -242,6 +256,9 @@ export default class ReactNativeAD {
         }, 15000)
 
         let body = `grant_type=${grantType}${_serialize(params)}`
+        console.log('this.config.token_uri: ', this.config.token_uri);
+        console.log('defaultTokenUrl: ', defaultTokenUrl);
+        console.log('body: ', body);
         fetch(this.config.token_uri ? this.config.token_uri : defaultTokenUrl, {
           method : 'POST',
           mode : 'cors',
