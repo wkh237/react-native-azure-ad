@@ -19,6 +19,7 @@ export default class ADLoginView extends React.Component {
     onURLChange : Function,
     context : ReactNativeAD,
     hideAfterLogin? : bool,
+    userAgent?: string
   };
 
   state : {
@@ -107,6 +108,7 @@ export default class ADLoginView extends React.Component {
           onShouldStartLoadWithRequest={(e) => {
             return true
           }}
+          userAgent={this.props.userAgent}
           renderError={() => renderError(this.refs.ADLoginView.reload)}
           startInLoadingState={false}
           injectedJavaScript={js}
