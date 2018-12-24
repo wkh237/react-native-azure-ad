@@ -55,7 +55,7 @@ class LandingView extends React.Component {
     this.AzureADContext = {
       client_id : CLIENT_ID,
       // Optional
-      redirectUrl : 'http://localhost:8080',  
+      redirect_url : 'http://localhost:8080',  
       // Optional
       authority_host : 'https://login.microsoftonline.com/common/oauth2/authorize',
       // Optional
@@ -188,7 +188,7 @@ The configuration object contains the following properties :
 
 The application `client_id`, this property is required, it's also the identifier of each ReactNativeAD context.
 
-`redirect_uri:string` **Optional**
+`redirect_url:string` **Optional**
 
 An url that ADLoginView will be redirect when login success, this property is optional.
 
@@ -271,7 +271,7 @@ Get access_token by given `grant_type` and params, when this process success, it
 {
   client_secret : string | null,
   client_id : string | null,
-  redirect_uri : string | null,
+  redirect_url : string | null,
   tenant : string | null,
   prompt : string | null,
   resources : Array<string> | null,
@@ -301,7 +301,7 @@ Get access_token by given `grant_type` and params, when this process success, it
 ```
 {
   client_id : string,
-  redirect_uri? : string,
+  redirect_url? : string,
   authority_host : string,
   tenant : string,
   client_secret : string,
