@@ -211,46 +211,54 @@ export default class ADLoginView extends React.Component {
     // Transform resource string to array
     if( typeof resources === 'string')
       resources = [resources]
-    else if(Array.isArray(resources))
-      resources = resources.length === 0 ? null : resources
+    else if(!Array.isArray(resources) || resources.length===0)
+      resources = ["common"];
 
     log.verbose('ADLoginView get access token for resources=', resources)
 
+
+    /* NOTE: as of 11/15/2018, MS has changed the token behavior in that we cannot re-use the same auth-code more than once to get all the resource tokens. 
+    *  Instead we must use the refresh token result from the first token request to get other resource tokens. 
+    *  https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/whats-new#change-notice-authorization-codes-will-no-longer-be-available-for-reuse
+    *  https://social.msdn.microsoft.com/Forums/en-US/4192e141-309a-4dd6-a5c9-f1a8ce32f4ca/aadsts54005-oauth2-authorization-code-was-already-redeemed?forum=WindowsAzureAD
+    */
+
     let promises:Array<Promise> = []
-    let config = { client_id, redirect_uri, code, client_secret,
-      // set resource to common by default
-      resource : 'common'
-    }
+    let [resourceFirst, ...resourcesOther] = resources;
+    let config = { client_id, redirect_uri, code, client_secret, resource : resourceFirst }
 
-    if(resources === null || resources === void 0)
-    {
-      promises.push(context.grantAccessToken(CONST.GRANT_TYPE.AUTHORIZATION_CODE, config))
-    }
-    // Get access_token for each resource
-    else {
-      promises = resources.map( (rcs, i) => {
-        let cfg = Object.assign({}, config, {resource : rcs})
-        return context.grantAccessToken(CONST.GRANT_TYPE.AUTHORIZATION_CODE , cfg)
-      })
-    }
-    return Promise.all(promises).then((resps:Array<GrantTokenResp>) => {
+    return context.grantAccessToken(CONST.GRANT_TYPE.AUTHORIZATION_CODE, config).then(cred => {
+      //remove AUTHORIZATION_CODE specific properties because we are now going to use the REFRESH_TOKEN for all the remaining resources
+      delete config.code;
+      delete config.redirect_uri;
+      config.refresh_token = cred.response.refresh_token;
 
-      log.verbose('ADLoginView response access info ', resps)
+      //get array of promises for all the resource token acquisitions to perform in parallel
+      let promises = resourcesOther.map(resource => {
+        let cfg = Object.assign({},config,{resource});
+        return context.grantAccessToken(CONST.GRANT_TYPE.REFRESH_TOKEN, cfg);
+      });
 
-      if(!this.props.context)
-        throw new Error('value of property `context` is invalid=', this.props.context)
+      //wait on the resource promises, then finalize
+      return Promise.all(promises).then((resps:Array<GrantTokenResp>) => {
 
-      let context = this.props.context
-      let onSuccess = this.props.onSuccess || function(){}
+        log.verbose('ADLoginView response access info ', resps)
 
-      // trigger loggined finished event
-      if(context !== null && typeof this.props.onSuccess === 'function')
-        onSuccess(context.getCredentials())
-      this._lock = false
+        if(!this.props.context)
+          throw new Error('value of property `context` is invalid=', this.props.context)
 
-    }).catch((err) => {
-      throw new Error('Failed to acquire token for resources', err.stack)
-    })
+        let context = this.props.context
+        let onSuccess = this.props.onSuccess || function(){}
+
+        // trigger loggined finished event
+        if(context !== null && typeof this.props.onSuccess === 'function')
+          onSuccess(context.getCredentials())
+        this._lock = false
+
+      }).catch((err) => {
+        throw new Error('Failed to acquire token for resources', err.stack)
+      });
+    });
   }
 
 }
