@@ -4,7 +4,7 @@ import CONST from './const.js'
 import Timer from 'react-timer-mixin'
 import log from './logger'
 
-const defaultTokenUrl = 'https://login.microsoftonline.com/common/oauth2/token'
+const defaultTokenUrl = "https://login.microsoftonline.com/fortunadomein.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1_SignUp";
 
 import type {ADConfig, ADCredentials, GrantTokenResp, ReactNativeADConfig, ReactNativeADCredential} from './types';
 
