@@ -17,5 +17,8 @@
     "url": "https://github.com/wkh237/react-native-azure-ad.git"
   },
   "author": "wkh237",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react-timer-mixin": "^0.13.4"
+  }
 }
