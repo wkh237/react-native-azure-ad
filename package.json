@@ -1,6 +1,6 @@
 {
   "name": "react-native-azure-ad",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A Azure AD authentication library implementation uses pure react native API (no native library needed).",
   "main": "src/index.js",
   "scripts": {
@@ -17,5 +17,8 @@
     "url": "https://github.com/wkh237/react-native-azure-ad.git"
   },
   "author": "wkh237",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react-timer-mixin": "^0.13.4"
+  }
 }
