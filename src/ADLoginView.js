@@ -113,7 +113,7 @@ export default class ADLoginView extends React.Component {
         renderError={() => renderError(this.refs.ADLoginView.reload)}
         startInLoadingState={false}
         injectedJavaScript={js}
-        scalesPageToFit={true} />) : null
+      />) : null
     )
   }
 
