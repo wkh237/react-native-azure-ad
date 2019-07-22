@@ -55,7 +55,7 @@ export default class ADLoginView extends React.Component {
     this._lock = false
   }
 
-  componentWillUpdate(nextProps: any, nextState: any): any {
+  UNSAFE_componentWillUpdate(nextProps: any, nextState: any): any {
     if (this.state.visible === nextState.visible && this.state.page === nextState.page)
       return false
     return true
@@ -67,7 +67,7 @@ export default class ADLoginView extends React.Component {
     log.debug('ADLoginView updated.')
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (!this.props.needLogout && nextProps.needLogout) {
       let context = this.props.context
       let tenant = context.getConfig().tenant
