@@ -13,6 +13,9 @@
     "react-native",
     "oauth"
   ],
+  "dependencies": {
+    "react-native-webview": "^5.12.1"
+  },
   "repository": {
     "url": "https://github.com/wkh237/react-native-azure-ad.git"
   },
