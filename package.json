@@ -14,14 +14,11 @@
     "oauth"
   ],
   "dependencies": {
-    "react-native-webview": "^5.12.1"
+    "react-timer-mixin": "^0.13.4"
   },
   "repository": {
     "url": "https://github.com/wkh237/react-native-azure-ad.git"
   },
   "author": "wkh237",
-  "license": "MIT",
-  "dependencies": {
-    "react-timer-mixin": "^0.13.4"
-  }
+  "license": "MIT"
 }
